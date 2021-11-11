@@ -10,4 +10,4 @@ for cygwin
 if meet error like unknow type of _Bool   change the file which report error 
 add 
 #
-typedef bool _Bool
+#typedef bool _Bool
