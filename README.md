@@ -1,4 +1,8 @@
 # lpunpack and lpmake
 
 build :
-./make.sh
+for linux\n
+./make.sh\n
+\n
+for cygwin\n
+./cygmake.sh\n
