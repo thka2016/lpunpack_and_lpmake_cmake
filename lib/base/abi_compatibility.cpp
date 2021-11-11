@@ -53,7 +53,7 @@ bool ReadFully(int fd, void* data, size_t byte_count) {
   return ReadFully(borrowed_fd(fd), data, byte_count);
 }
 
-bool ReadFullyAtOffset(int fd, void* data, size_t byte_count, off64_t offset) {
+bool ReadFullyAtOffset(int fd, void* data, size_t byte_count, off_t offset) {
   return ReadFullyAtOffset(borrowed_fd(fd), data, byte_count, offset);
 }
 
@@ -68,7 +68,7 @@ bool WriteFully(int fd, const void* data, size_t byte_count) {
 #endif
 
 #pragma clang diagnostic ignored "-Wreturn-type-c-linkage"
-extern "C" std::unique_ptr<MappedFile> MAPPEDFILE_FROMFD(int fd, off64_t offset, size_t length,
+extern "C" std::unique_ptr<MappedFile> MAPPEDFILE_FROMFD(int fd, off_t offset, size_t length,
                                                          int prot) {
   return MappedFile::FromFd(fd, offset, length, prot);
 }

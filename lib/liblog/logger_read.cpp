@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
+#include <stdbool.h>
 #include <android/log.h>
 
 #include "logd_reader.h"

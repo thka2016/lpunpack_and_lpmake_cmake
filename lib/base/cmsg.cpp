@@ -20,7 +20,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <sys/socket.h>
-#include <sys/user.h>
+//#include <sys/user.h>
 
 #include <memory>
 
@@ -47,7 +47,7 @@ ssize_t SendFileDescriptorVector(borrowed_fd sockfd, const void* data, size_t le
       .msg_iovlen = 1,
       .msg_control = cmsg_buf,
       // We can't cast to the actual type of the field, because it's different across platforms.
-      .msg_controllen = static_cast<unsigned int>(cmsg_space),
+      .msg_controllen = static_cast<socklen_t>(cmsg_space),
       .msg_flags = 0,
   };
 
@@ -89,7 +89,7 @@ ssize_t ReceiveFileDescriptorVector(borrowed_fd sockfd, void* data, size_t len, 
       .msg_iovlen = 1,
       .msg_control = cmsg_buf,
       // We can't cast to the actual type of the field, because it's different across platforms.
-      .msg_controllen = static_cast<unsigned int>(cmsg_space),
+      .msg_controllen = static_cast<socklen_t>(cmsg_space),
       .msg_flags = 0,
   };
 

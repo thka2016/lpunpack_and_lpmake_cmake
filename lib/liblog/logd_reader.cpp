@@ -21,6 +21,7 @@
 #include <inttypes.h>
 #include <poll.h>
 #include <stdarg.h>
+#include <stdbool.h>
 #include <stdatomic.h>
 #include <stdio.h>
 #include <stdlib.h>

@@ -38,7 +38,7 @@
 #include "sparse_format.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
-#define lseek64 lseek
+#define lseek lseek
 #define off64_t off_t
 #endif
 
@@ -88,12 +88,12 @@ class SparseFileFdSource : public SparseFileSource {
   SparseFileFdSource(int fd) : fd(fd) {}
   ~SparseFileFdSource() override {}
 
-  void Seek(int64_t off) override { lseek64(fd, off, SEEK_CUR); }
+  void Seek(int64_t off) override { lseek(fd, off, SEEK_CUR); }
 
-  int64_t GetOffset() override { return lseek64(fd, 0, SEEK_CUR); }
+  int64_t GetOffset() override { return lseek(fd, 0, SEEK_CUR); }
 
   int SetOffset(int64_t offset) override {
-    return lseek64(fd, offset, SEEK_SET) == offset ? 0 : -errno;
+    return lseek(fd, offset, SEEK_SET) == offset ? 0 : -errno;
   }
 
   int AddToSparseFile(struct sparse_file* s, int64_t len, unsigned int block) override {
@@ -555,12 +555,12 @@ struct sparse_file* sparse_file_import_auto(int fd, bool crc, bool verbose) {
     return s;
   }
 
-  len = lseek64(fd, 0, SEEK_END);
+  len = lseek(fd, 0, SEEK_END);
   if (len < 0) {
     return nullptr;
   }
 
-  lseek64(fd, 0, SEEK_SET);
+  lseek(fd, 0, SEEK_SET);
 
   s = sparse_file_new(4096, len);
   if (!s) {

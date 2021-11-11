@@ -12,6 +12,9 @@
       "name": "recovery_unit_test"
     },
     {
+      "name": "update_engine_unittests"
+    },
+    {
       "name": "ziparchive-tests"
     },
     {

@@ -1,0 +1,1 @@
+clang++ -std=c++17 -stdlib=libc++ -static -I../include -Iinclude -I../base/include -D__linux__ -DLIBLOG_LOG_TAG=1006 -DSNET_EVENT_LOG_TAG=1397638484 -static -c log_event_list.cpp log_event_write.cpp logger_name.cpp logger_read.cpp logger_write.cpp logprint.cpp properties.cpp

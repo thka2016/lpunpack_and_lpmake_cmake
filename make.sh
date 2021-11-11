@@ -9,13 +9,7 @@ CFLAGS=-static
 
 cd lib
 cd liblog
-case "$OSTYPE" in
-  linux* | darwin*)
-    src="event_tag_map.cpp"
-  ;;
-  *)
-  ;;
-esac
+
 $CC -std=c++17 -I../include -Iinclude -I../base/include -DLIBLOG_LOG_TAG=1006 -DSNET_EVENT_LOG_TAG=1397638484 ${CFLAGS} -c log_event_list.cpp log_event_write.cpp logger_name.cpp logger_read.cpp logger_write.cpp logprint.cpp properties.cpp ${src}
 $AR rcs ../lib/liblog.a *.o
 rm -r *.o

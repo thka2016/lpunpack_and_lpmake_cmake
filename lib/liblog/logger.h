@@ -18,7 +18,7 @@
 
 #include <stdatomic.h>
 #include <sys/cdefs.h>
-
+#include <stdbool.h>
 #include <log/log.h>
 
 #include "uio.h"

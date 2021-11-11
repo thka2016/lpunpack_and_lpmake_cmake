@@ -33,8 +33,8 @@
 #endif
 
 #if defined(__APPLE__) && defined(__MACH__)
-#define lseek64 lseek
-#define off64_t off_t
+#define lseek lseek
+#define off_t off_t
 #endif
 
 void usage() {
@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
   int ret;
   struct sparse_file* s;
   unsigned int block_size = 4096;
-  off64_t len;
+  off_t len;
 
   if (argc < 3 || argc > 4) {
     usage();
@@ -83,8 +83,8 @@ int main(int argc, char* argv[]) {
     }
   }
 
-  len = lseek64(in, 0, SEEK_END);
-  lseek64(in, 0, SEEK_SET);
+  len = lseek(in, 0, SEEK_END);
+  lseek(in, 0, SEEK_SET);
 
   s = sparse_file_new(block_size, len);
   if (!s) {

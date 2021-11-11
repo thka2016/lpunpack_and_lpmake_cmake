@@ -22,7 +22,8 @@
 #if defined(__APPLE__)
 #include <pthread.h>
 #elif defined(__linux__) && !defined(__ANDROID__)
-#include <syscall.h>
+//#include <syscall.h>
+#include <windows.h>
 #elif defined(_WIN32)
 #include <windows.h>
 #endif
@@ -38,7 +39,8 @@ uint64_t GetThreadId() {
   pthread_threadid_np(NULL, &tid);
   return tid;
 #elif defined(__linux__)
-  return syscall(__NR_gettid);
+  return GetCurrentThreadId();
+//  return syscall(__NR_gettid);
 #elif defined(_WIN32)
   return GetCurrentThreadId();
 #endif

@@ -322,7 +322,7 @@ bool ReadFully(borrowed_fd fd, void* data, size_t byte_count) {
 #if defined(_WIN32)
 // Windows implementation of pread. Note that this DOES move the file descriptors read position,
 // but it does so atomically.
-static ssize_t pread(borrowed_fd fd, void* data, size_t byte_count, off64_t offset) {
+static ssize_t pread(borrowed_fd fd, void* data, size_t byte_count, off_t offset) {
   DWORD bytes_read;
   OVERLAPPED overlapped;
   memset(&overlapped, 0, sizeof(OVERLAPPED));
@@ -338,7 +338,7 @@ static ssize_t pread(borrowed_fd fd, void* data, size_t byte_count, off64_t offs
 }
 #endif
 
-bool ReadFullyAtOffset(borrowed_fd fd, void* data, size_t byte_count, off64_t offset) {
+bool ReadFullyAtOffset(borrowed_fd fd, void* data, size_t byte_count, off_t offset) {
   uint8_t* p = reinterpret_cast<uint8_t*>(data);
   while (byte_count > 0) {
     ssize_t n = TEMP_FAILURE_RETRY(pread(fd.get(), p, byte_count, offset));
@@ -460,7 +460,9 @@ std::string GetExecutablePath() {
   path[PATH_MAX - 1] = 0;
   return path;
 #else
-#error unknown OS
+  std::string path;
+  android::base::Readlink("/proc/self/exe", &path);
+  return path;
 #endif
 }
 

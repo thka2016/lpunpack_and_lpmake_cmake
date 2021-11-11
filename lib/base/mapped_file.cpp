@@ -25,7 +25,7 @@ namespace base {
 
 static constexpr char kEmptyBuffer[] = {'0'};
 
-static off64_t InitPageSize() {
+static off_t InitPageSize() {
 #if defined(_WIN32)
   SYSTEM_INFO si;
   GetSystemInfo(&si);
@@ -35,7 +35,7 @@ static off64_t InitPageSize() {
 #endif
 }
 
-std::unique_ptr<MappedFile> MappedFile::FromFd(borrowed_fd fd, off64_t offset, size_t length,
+std::unique_ptr<MappedFile> MappedFile::FromFd(borrowed_fd fd, off_t offset, size_t length,
                                                int prot) {
 #if defined(_WIN32)
   return FromOsHandle(reinterpret_cast<HANDLE>(_get_osfhandle(fd.get())), offset, length, prot);
@@ -44,12 +44,12 @@ std::unique_ptr<MappedFile> MappedFile::FromFd(borrowed_fd fd, off64_t offset, s
 #endif
 }
 
-std::unique_ptr<MappedFile> MappedFile::FromOsHandle(os_handle h, off64_t offset, size_t length,
+std::unique_ptr<MappedFile> MappedFile::FromOsHandle(os_handle h, off_t offset, size_t length,
                                                      int prot) {
-  static const off64_t page_size = InitPageSize();
+  static const off_t page_size = InitPageSize();
   size_t slop = offset % page_size;
-  off64_t file_offset = offset - slop;
-  off64_t file_length = length + slop;
+  off_t file_offset = offset - slop;
+  off_t file_length = length + slop;
 
 #if defined(_WIN32)
   HANDLE handle = CreateFileMappingW(
