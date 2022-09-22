@@ -37,11 +37,11 @@
 #include <cutils/android_get_control_file.h>
 #include <fs_mgr.h>
 #endif
-#include <jsonpb/jsonpb.h>
+//#include <jsonpb/jsonpb.h>
 #include <liblp/builder.h>
 #include <liblp/liblp.h>
 
-#include "dynamic_partitions_device_info.pb.h"
+//#include "dynamic_partitions_device_info.pb.h"
 using namespace android;
 using namespace android::fs_mgr;
 
@@ -56,7 +56,7 @@ static int usage(int /* argc */, char* argv[], std::ostream& cerr) {
             "\n"
             "Options:\n"
             "  -s, --slot=N     Slot number or suffix.\n"
-            "  -j, --json       Print in JSON format.\n"
+//            "  -j, --json       Print in JSON format.\n"
             "  -d, --dump-metadata-size\n"
             "                   Print the space reserved for metadata to stdout\n"
             "                   in bytes.\n"
@@ -133,48 +133,48 @@ static std::string RemoveSuffix(const std::string& s, const std::string& suffix)
 }
 
 // Merge proto with information from metadata.
-static bool MergeMetadata(const LpMetadata* metadata,
-                          DynamicPartitionsDeviceInfoProto* proto) {
-    if (!metadata) return false;
-    auto builder = MetadataBuilder::New(*metadata);
-    if (!builder) return false;
-
-    std::string slot_suffix = GetSlotSuffix();
-
-    for (const auto& group_name : builder->ListGroups()) {
-        auto group = builder->FindGroup(group_name);
-        if (!group) continue;
-        if (!base::EndsWith(group_name, slot_suffix)) continue;
-        auto group_proto = proto->add_groups();
-        group_proto->set_name(RemoveSuffix(group_name, slot_suffix));
-        group_proto->set_maximum_size(group->maximum_size());
-
-        for (auto partition : builder->ListPartitionsInGroup(group_name)) {
-            auto partition_name = partition->name();
-            if (!base::EndsWith(partition_name, slot_suffix)) continue;
-            auto partition_proto = proto->add_partitions();
-            partition_proto->set_name(RemoveSuffix(partition_name, slot_suffix));
-            partition_proto->set_group_name(RemoveSuffix(group_name, slot_suffix));
-            partition_proto->set_size(partition->size());
-            partition_proto->set_is_dynamic(true);
-        }
-    }
-
-    for (const auto& block_device : metadata->block_devices) {
-        std::string name = GetBlockDevicePartitionName(block_device);
-        BlockDeviceInfo info;
-        if (!builder->GetBlockDeviceInfo(name, &info)) {
-            continue;
-        }
-        auto block_device_proto = proto->add_block_devices();
-        block_device_proto->set_name(RemoveSuffix(name, slot_suffix));
-        block_device_proto->set_size(info.size);
-        block_device_proto->set_block_size(info.logical_block_size);
-        block_device_proto->set_alignment(info.alignment);
-        block_device_proto->set_alignment_offset(info.alignment_offset);
-    }
-    return true;
-}
+//static bool MergeMetadata(const LpMetadata* metadata,
+//                          DynamicPartitionsDeviceInfoProto* proto) {
+//    if (!metadata) return false;
+//    auto builder = MetadataBuilder::New(*metadata);
+//    if (!builder) return false;
+//
+//    std::string slot_suffix = GetSlotSuffix();
+//
+//    for (const auto& group_name : builder->ListGroups()) {
+//        auto group = builder->FindGroup(group_name);
+//        if (!group) continue;
+//        if (!base::EndsWith(group_name, slot_suffix)) continue;
+//        auto group_proto = proto->add_groups();
+//        group_proto->set_name(RemoveSuffix(group_name, slot_suffix));
+//        group_proto->set_maximum_size(group->maximum_size());
+//
+//        for (auto partition : builder->ListPartitionsInGroup(group_name)) {
+//            auto partition_name = partition->name();
+//            if (!base::EndsWith(partition_name, slot_suffix)) continue;
+//            auto partition_proto = proto->add_partitions();
+//            partition_proto->set_name(RemoveSuffix(partition_name, slot_suffix));
+//            partition_proto->set_group_name(RemoveSuffix(group_name, slot_suffix));
+//            partition_proto->set_size(partition->size());
+//            partition_proto->set_is_dynamic(true);
+//        }
+//    }
+//
+//    for (const auto& block_device : metadata->block_devices) {
+//        std::string name = GetBlockDevicePartitionName(block_device);
+//        BlockDeviceInfo info;
+//        if (!builder->GetBlockDeviceInfo(name, &info)) {
+//            continue;
+//        }
+//        auto block_device_proto = proto->add_block_devices();
+//        block_device_proto->set_name(RemoveSuffix(name, slot_suffix));
+//        block_device_proto->set_size(info.size);
+//        block_device_proto->set_block_size(info.logical_block_size);
+//        block_device_proto->set_alignment(info.alignment);
+//        block_device_proto->set_alignment_offset(info.alignment_offset);
+//    }
+//    return true;
+//}
 
 #ifdef __ANDROID__
 static DynamicPartitionsDeviceInfoProto::Partition* FindPartition(
@@ -237,37 +237,37 @@ static bool MergeFsUsage(DynamicPartitionsDeviceInfoProto* proto,
 }
 #endif
 
-// Print output in JSON format.
-// If successful, this function must write a valid JSON string to "cout" and return 0.
-static int PrintJson(const LpMetadata* metadata, std::ostream& cout,
-                     std::ostream& cerr) {
-    DynamicPartitionsDeviceInfoProto proto;
-
-    if (base::GetBoolProperty("ro.boot.dynamic_partitions", false)) {
-        proto.set_enabled(true);
-    }
-
-    if (base::GetBoolProperty("ro.boot.dynamic_partitions_retrofit", false)) {
-        proto.set_retrofit(true);
-    }
-
-    if (!MergeMetadata(metadata, &proto)) {
-        cerr << "Warning: Failed to read metadata.\n";
-    }
-#ifdef __ANDROID__
-    if (!MergeFsUsage(&proto, cerr)) {
-        cerr << "Warning: Failed to read filesystem size and usage.\n";
-    }
-#endif
-
-    auto error_or_json = jsonpb::MessageToJsonString(proto);
-    if (!error_or_json.ok()) {
-        cerr << error_or_json.error() << "\n";
-        return EX_SOFTWARE;
-    }
-    cout << *error_or_json;
-    return EX_OK;
-}
+//// Print output in JSON format.
+//// If successful, this function must write a valid JSON string to "cout" and return 0.
+//static int PrintJson(const LpMetadata* metadata, std::ostream& cout,
+//                     std::ostream& cerr) {
+//    DynamicPartitionsDeviceInfoProto proto;
+//
+//    if (base::GetBoolProperty("ro.boot.dynamic_partitions", false)) {
+//        proto.set_enabled(true);
+//    }
+//
+//    if (base::GetBoolProperty("ro.boot.dynamic_partitions_retrofit", false)) {
+//        proto.set_retrofit(true);
+//    }
+//
+//    if (!MergeMetadata(metadata, &proto)) {
+//        cerr << "Warning: Failed to read metadata.\n";
+//    }
+//#ifdef __ANDROID__
+//    if (!MergeFsUsage(&proto, cerr)) {
+//        cerr << "Warning: Failed to read filesystem size and usage.\n";
+//    }
+//#endif
+//
+//    auto error_or_json = jsonpb::MessageToJsonString(proto);
+//    if (!error_or_json.ok()) {
+//        cerr << error_or_json.error() << "\n";
+//        return EX_SOFTWARE;
+//    }
+//    cout << *error_or_json;
+//    return EX_OK;
+//}
 
 static int DumpMetadataSize(const LpMetadata& metadata, std::ostream& cout) {
     auto super_device = GetMetadataSuperBlockDevice(metadata);
@@ -393,7 +393,7 @@ int LpdumpMain(int argc, char* argv[], std::ostream& cout, std::ostream& cerr) {
         { "all", no_argument, nullptr, 'a' },
         { "slot", required_argument, nullptr, 's' },
         { "help", no_argument, nullptr, 'h' },
-        { "json", no_argument, nullptr, 'j' },
+//        { "json", no_argument, nullptr, 'j' },
         { "dump-metadata-size", no_argument, nullptr, 'd' },
         { "is-super-empty", no_argument, nullptr, 'e' },
         { nullptr, 0, nullptr, 0 },
@@ -487,9 +487,9 @@ int LpdumpMain(int argc, char* argv[], std::ostream& cout, std::ostream& cerr) {
     auto pt = ReadDeviceOrFile(super_path, slot.value());
 
     // --json option doesn't require metadata to be present.
-    if (json) {
-        return PrintJson(pt.get(), cout, cerr);
-    }
+//    if (json) {
+//        return PrintJson(pt.get(), cout, cerr);
+//    }
 
     if (!pt) {
         cerr << "Failed to read metadata.\n";
